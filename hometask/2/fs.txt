@@ -1,0 +1,110 @@
+root@bullseye:~# lsblk
+NAME      MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda         8:0    0   20G  0 disk
+L-sda1      8:1    0   20G  0 part  /
+sdb         8:16   0  100M  0 disk
+L-lvm-lv1 253:0    0  192M  0 lvm
+sdc         8:32   0  100M  0 disk
+L-lvm-lv1 253:0    0  192M  0 lvm
+sdd         8:48   0  110M  0 disk
+L-md127     9:127  0  216M  0 raid0
+sde         8:64   0  110M  0 disk
+L-md127     9:127  0  216M  0 raid0
+sdf         8:80   0 29.8M  0 disk
++-sdf1      8:81   0    9M  0 part
+L-sdf2      8:82   0  512B  0 part
+root@bullseye:~# parted -l
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 21.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  21.5GB  21.5GB  primary  ext4         boot
+
+
+Error: /dev/sdb: unrecognised disk label
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 105MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Error: /dev/sdc: unrecognised disk label
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdc: 105MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Error: /dev/sdd: unrecognised disk label
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdd: 115MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Error: /dev/sde: unrecognised disk label
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sde: 115MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdf: 31.2MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name     Flags
+ 2      1048kB  1049kB  512B       btrfs          primary
+ 1      1049kB  10.5MB  9437kB  ext3         primary
+
+
+Model: Linux device-mapper (linear) (dm)
+Disk /dev/mapper/lvm-lv1: 201MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End    Size   File system  Flags
+ 1      0.00B  201MB  201MB  ext4
+
+
+Model: Linux Software RAID Array (md)
+Disk /dev/md127: 226MB
+Sector size (logical/physical): 512B/512B
+Partition Table: loop
+Disk Flags:
+
+Number  Start  End    Size   File system  Flags
+ 1      0.00B  226MB  226MB  ext4
+
+
+root@bullseye:~#
+root@bullseye:~#
+
+root@bullseye:~# mkdir -p /homework/ext/
+root@bullseye:~# mkdir -p /homework/btrfs
+root@bullseye:~# mount /dev/sdf1 /homework/ext/
+root@bullseye:~# mount /dev/sdf2 /homework/btrfs
+root@bullseye:~#
+root@bullseye:~#
+root@bullseye:~# lsblk
+NAME      MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda         8:0    0   20G  0 disk
+L-sda1      8:1    0   20G  0 part  /
+sdb         8:16   0  100M  0 disk
+L-lvm-lv1 253:0    0  192M  0 lvm
+sdc         8:32   0  100M  0 disk
+L-lvm-lv1 253:0    0  192M  0 lvm
+sdd         8:48   0  110M  0 disk
+L-md127     9:127  0  216M  0 raid0
+sde         8:64   0  110M  0 disk
+L-md127     9:127  0  216M  0 raid0
+sdf         8:80   0 29.8M  0 disk
++-sdf1      8:81   0    9M  0 part  /homework/ext
+L-sdf2      8:82   0  512B  0 part /homework/btrfs
+root@bullseye:~#

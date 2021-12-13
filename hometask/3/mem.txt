@@ -1,0 +1,319 @@
+root@bullseye:~# stress --cpu 1 --vm-bytes 50&
+[1] 1504
+root@bullseye:~# stress: info: [1504] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+top | grep load
+top - 13:07:53 up 23 min,  1 user,  load average: 0.15, 0.03, 0.01
+     57 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kthrotld
+root@bullseye:~# [200~top | grep load~^C
+root@bullseye:~# top | grep load
+top - 13:08:03 up 23 min,  1 user,  load average: 0.28, 0.07, 0.02
+     57 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kthrotld
+root@bullseye:~# stress --cpu 1 --vm-bytes 50&
+[2] 1514
+root@bullseye:~# stress: info: [1514] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+^C
+root@bullseye:~# top | grep load
+top - 13:08:33 up 24 min,  1 user,  load average: 0.91, 0.24, 0.08
+     52 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 devfreq+
+root@bullseye:~# jobs
+[1]-  Running                 stress --cpu 1 --vm-bytes 50 &
+[2]+  Running                 stress --cpu 1 --vm-bytes 50 &
+root@bullseye:~# fg 30
+bash: fg: 30: no such job
+root@bullseye:~# fg 1
+stress --cpu 1 --vm-bytes 50
+^C
+root@bullseye:~# jobs
+[2]+  Running                 stress --cpu 1 --vm-bytes 50 &
+root@bullseye:~# fg 2
+stress --cpu 1 --vm-bytes 50
+^C
+root@bullseye:~#
+root@bullseye:~# top | grep load
+top - 13:09:10 up 24 min,  1 user,  load average: 1.03, 0.35, 0.13
+
+root@bullseye:~# ps -aux --sort %mem | less | tail
+root         308  0.0  1.4  21960  7060 ?        Ss   12:44   0:00 /lib/systemd/systemd-logind
+root         757  0.0  1.6  14452  7812 ?        Ss   12:44   0:00 sshd: root@pts/0
+root         760  0.0  1.6  15124  8156 ?        Ss   12:44   0:00 /lib/systemd/systemd --user
+postgres     489  0.0  1.7 212680  8712 ?        Ss   12:44   0:00 postgres: 13/main: autovacuum launcher
+root           1  0.1  2.0  98200 10140 ?        Ss   12:44   0:02 /sbin/init
+postgres     488  0.0  2.1 212144 10300 ?        Ss   12:44   0:00 postgres: 13/main: walwriter
+root         468  0.0  3.5  26544 17344 ?        Ss   12:44   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root         246  0.0  3.6  56452 17832 ?        Ss   12:44   0:00 /lib/systemd/systemd-journald
+postgres     482  0.0  5.2 212144 25624 ?        Ss   12:44   0:00 /usr/lib/postgresql/13/bin/postgres -D /var/lib/postgresql/13/main -c config_file=/etc/postgresql/13/main/postgresql.conf
+vagrant      464  0.7 23.8 189308 115688 ?       Ss   12:44   0:10 /home/vagrant/pgadmin4/bin/python /home/vagrant/pgadmin4/lib/python3.9/site-packages/pgadmin4/pgAdmin4.py
+root@bullseye:~# ps -auf | less | head
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         771  0.0  0.9   6760  4476 pts/0    Ss   12:44   0:00 -bash
+root        1229  0.0  0.7   8852  3700 pts/0    S    13:01   0:00  \_ su vagrant
+vagrant     1230  0.0  0.9   6764  4536 pts/0    S    13:01   0:00      \_ bash
+root        1240  0.0  0.7   9512  3636 pts/0    S    13:02   0:00          \_ sudo su
+root        1241  0.0  0.8   8820  4100 pts/0    S    13:02   0:00              \_ su
+root        1242  0.0  0.7   5992  3820 pts/0    S    13:02   0:00                  \_ bash
+root        1550  0.0  0.7   8940  3520 pts/0    R+   13:09   0:00                      \_ ps -auf
+root        1551  0.0  0.4   4568  2388 pts/0    S+   13:09   0:00                      \_ less
+root        1552  0.0  0.1   4228   512 pts/0    S+   13:09   0:00                      \_ head
+root@bullseye:~# top
+top - 13:09:46 up 25 min,  1 user,  load average: 0.57, 0.31, 0.12
+Tasks: 111 total,   1 running, 110 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  3.2 sy,  0.0 ni, 96.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :    473.0 total,     97.1 free,    169.0 used,    206.9 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.    274.9 avail Mem
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+      1 root      20   0   98200  10140   7788 S   0.0   2.1   0:02.40 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.01 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par+
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker+
+      8 root      20   0       0      0      0 I   0.0   0.0   0:00.07 kworker+
+      9 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_perc+
+     10 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tas+
+     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tas+
+     12 root      20   0       0      0      0 S   0.0   0.0   0:00.06 ksoftir+
+     13 root      20   0       0      0      0 I   0.0   0.0   0:00.42 rcu_sch+
+     14 root      rt   0       0      0      0 S   0.0   0.0   0:00.02 migrati+
+     15 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0
+     16 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/1
+     17 root      rt   0       0      0      0 S   0.0   0.0   0:00.00 migrati+
+     18 root      20   0       0      0      0 S   0.0   0.0   0:00.05 ksoftir+
+     20 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker+
+     22 root      20   0       0      0      0 I   0.0   0.0   0:00.11 kworker+
+     23 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kdevtmp+
+     24 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+     25 root      20   0       0      0      0 S   0.0   0.0   0:00.01 kauditd
+     26 root      20   0       0      0      0 S   0.0   0.0   0:00.00 khungta+
+     27 root      20   0       0      0      0 S   0.0   0.0   0:00.00 oom_rea+
+     28 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 writeba+
+     29 root      20   0       0      0      0 S   0.0   0.0   0:00.09 kcompac+
+     30 root      25   5       0      0      0 S   0.0   0.0   0:00.00 ksmd
+     48 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kintegr+
+     49 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kblockd
+     50 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 blkcg_p+
+     51 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 edac-po+
+     52 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 devfreq+
+     53 root       0 -20       0      0      0 I   0.0   0.0   0:00.24 kworker+
+     56 root      20   0       0      0      0 S   0.0   0.0   0:00.09 kswapd0
+     57 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kthrotld
+     58 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 acpi_th+
+     59 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ipv6_ad+
+root@bullseye:~# su vagrant
+vagrant@bullseye:/root$ stress --cpu 1 --vm-bytes 50&
+[1] 1584
+vagrant@bullseye:/root$ stress: info: [1584] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+
+vagrant@bullseye:/root$
+vagrant@bullseye:/root$ stress --cpu 1 --vm-bytes 50&^C
+vagrant@bullseye:/root$ lsof -u vagrant
+COMMAND  PID    USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
+python   464 vagrant  cwd    DIR                8,1     4096 1179661 /home/vagrant/pgadmin4
+python   464 vagrant  rtd    DIR                8,1     4096       2 /
+python   464 vagrant  txt    REG                8,1  5479736  267428 /usr/bin/python3.9
+python   464 vagrant  mem    REG                8,1    78184  131417 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psutil/_psutil_posix.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   125712  131420 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psutil/_psutil_linux.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    32656 1183078 /home/vagrant/pgadmin4/lib/python3.9/site-packages/cryptography/hazmat/bindings/_padding.abi3.so
+python   464 vagrant  mem    REG                8,1    43496  264266 /usr/lib/x86_64-linux-gnu/libffi.so.7.1.0
+python   464 vagrant  mem    REG                8,1   140536  398718 /usr/lib/python3.9/lib-dynload/_ctypes.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1  6773944 1183079 /home/vagrant/pgadmin4/lib/python3.9/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so
+python   464 vagrant  mem    REG                8,1  3270761 1182603 /home/vagrant/pgadmin4/lib/python3.9/site-packages/nacl/_sodium.abi3.so
+python   464 vagrant  mem    REG                8,1    63080 1181191 /home/vagrant/pgadmin4/lib/python3.9/site-packages/cffi.libs/libffi-9c61262e.so.8.1.0
+python   464 vagrant  mem    REG                8,1   938344 1181148 /home/vagrant/pgadmin4/lib/python3.9/site-packages/_cffi_backend.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   139632 1183310 /home/vagrant/pgadmin4/lib/python3.9/site-packages/bcrypt/_bcrypt.abi3.so
+python   464 vagrant  mem    REG                8,1   251816 1185569 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libsepol-b4f5b513.so.1
+python   464 vagrant  mem    REG                8,1   106904 1185563 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libselinux-cf8f9094.so.1
+python   464 vagrant  mem    REG                8,1   142720 1185559 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libsasl2-6f25e95f.so.3.0.0
+python   464 vagrant  mem    REG                8,1    61008 1185555 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/liblber-2-d5725c47.4.so.2.10.13
+python   464 vagrant  mem    REG                8,1    93000  272581 /usr/lib/x86_64-linux-gnu/libresolv-2.31.so
+python   464 vagrant  mem    REG                8,1     9000 1185565 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libkeyutils-1-ff31573b.2.so
+python   464 vagrant  mem    REG                8,1    46960 1185566 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libkrb5support-d7ce89d4.so.0.1
+python   464 vagrant  mem    REG                8,1     8840 1185567 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libcom_err-beb60336.so.2.1
+python   464 vagrant  mem    REG                8,1   167808 1185560 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libk5crypto-622ef25b.so.3.1
+python   464 vagrant  mem    REG                8,1   738056 1185568 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libkrb5-fb0d2caa.so.3.3
+python   464 vagrant  mem    REG                8,1    87848 1185558 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libz-a147dcb0.so.1.2.3
+python   464 vagrant  mem    REG                8,1   428752 1185557 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libldap_r-2-9bd554ba.4.so.2.10.13
+python   464 vagrant  mem    REG                8,1   240936 1185561 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libgssapi_krb5-174f8956.so.2.2
+python   464 vagrant  mem    REG                8,1  3242312 1185564 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libcrypto-e62d380e.so.1.1.1g
+python   464 vagrant  mem    REG                8,1   662504 1185562 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libssl-dbe77c63.so.1.1.1g
+python   464 vagrant  mem    REG                8,1   341416 1185556 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2_binary.libs/libpq-0929ced5.so.5.11
+python   464 vagrant  mem    REG                8,1  1204976 1185580 /home/vagrant/pgadmin4/lib/python3.9/site-packages/psycopg2/_psycopg.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1  1318776  267474 /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
+python   464 vagrant  mem    REG                8,1    99840  398731 /usr/lib/python3.9/lib-dynload/_sqlite3.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    73720 1181463 /home/vagrant/pgadmin4/lib/python3.9/site-packages/sqlalchemy/cresultproxy.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    37912 1181461 /home/vagrant/pgadmin4/lib/python3.9/site-packages/sqlalchemy/cutils.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    60648 1181457 /home/vagrant/pgadmin4/lib/python3.9/site-packages/sqlalchemy/cprocessors.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   202680  264367 /usr/lib/x86_64-linux-gnu/libcrypt.so.1.1.0
+python   464 vagrant  mem    REG                8,1    31080  398748 /usr/lib/python3.9/lib-dynload/termios.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    51696  272577 /usr/lib/x86_64-linux-gnu/libnss_files-2.31.so
+python   464 vagrant  mem    REG                8,1    70976  398708 /usr/lib/python3.9/lib-dynload/_asyncio.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   100736  263488 /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+python   464 vagrant  mem    REG                8,1  1870824  263490 /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+python   464 vagrant  mem    REG                8,1   799480 1184207 /home/vagrant/pgadmin4/lib/python3.9/site-packages/_brotli.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    19512  398730 /usr/lib/python3.9/lib-dynload/_queue.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   130440 1183918 /home/vagrant/pgadmin4/lib/python3.9/site-packages/greenlet/_greenlet.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   232424 1185364 /home/vagrant/pgadmin4/lib/python3.9/site-packages/simplejson/_speedups.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   597792  264518 /usr/lib/x86_64-linux-gnu/libssl.so.1.1
+python   464 vagrant  mem    REG                8,1   181408  398375 /usr/lib/python3.9/lib-dynload/_ssl.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    19272  398747 /usr/lib/python3.9/lib-dynload/resource.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    14568  398717 /usr/lib/python3.9/lib-dynload/_crypt.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   196296  267454 /usr/lib/x86_64-linux-gnu/libmpdec.so.2.5.1
+python   464 vagrant  mem    REG                8,1   176384  398723 /usr/lib/python3.9/lib-dynload/_decimal.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    48808  398724 /usr/lib/python3.9/lib-dynload/_json.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1  3076960  264517 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+python   464 vagrant  mem    REG                8,1    67632  398373 /usr/lib/python3.9/lib-dynload/_hashlib.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   158400  265813 /usr/lib/x86_64-linux-gnu/liblzma.so.5.2.5
+python   464 vagrant  mem    REG                8,1    41568  398726 /usr/lib/python3.9/lib-dynload/_lzma.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    53216 1180904 /home/vagrant/pgadmin4/lib/python3.9/site-packages/markupsafe/_speedups.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    30776  265561 /usr/lib/x86_64-linux-gnu/libuuid.so.1.3.0
+python   464 vagrant  mem    REG                8,1    14376  398716 /usr/lib/python3.9/lib-dynload/_contextvars.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    14536  398737 /usr/lib/python3.9/lib-dynload/_uuid.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    74688  262595 /usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4
+python   464 vagrant  mem    REG                8,1    28352  398709 /usr/lib/python3.9/lib-dynload/_bz2.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1    27002  272834 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+python   464 vagrant  mem    REG                8,1   346132  263518 /usr/lib/locale/C.UTF-8/LC_CTYPE
+python   464 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+python   464 vagrant  mem    REG                8,1   113088  265815 /usr/lib/x86_64-linux-gnu/libz.so.1.2.11
+python   464 vagrant  mem    REG                8,1   186496  266795 /usr/lib/x86_64-linux-gnu/libexpat.so.1.6.12
+python   464 vagrant  mem    REG                8,1  1321344  272571 /usr/lib/x86_64-linux-gnu/libm-2.31.so
+python   464 vagrant  mem    REG                8,1    14720  272584 /usr/lib/x86_64-linux-gnu/libutil-2.31.so
+python   464 vagrant  mem    REG                8,1    18688  272570 /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+python   464 vagrant  mem    REG                8,1   149520  272580 /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+python   464 vagrant  mem    REG                8,1    14520  398374 /usr/lib/python3.9/lib-dynload/_opcode.cpython-39-x86_64-linux-gnu.so
+python   464 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+python   464 vagrant    0r   CHR                1,3      0t0       4 /dev/null
+python   464 vagrant    1u  unix 0x00000000902ebb56      0t0   12133 type=STREAM
+python   464 vagrant    2u  unix 0x00000000902ebb56      0t0   12133 type=STREAM
+python   464 vagrant    3r   CHR                1,9      0t0       9 /dev/urandom
+python   464 vagrant    4w   REG                8,1      258  786798 /var/log/pgadmin/pgadmin4.log
+python   464 vagrant    5u  IPv4              13563      0t0     TCP localhost:5050 (LISTEN)
+bash    1230 vagrant  cwd    DIR                8,1     4096 1179653 /home/vagrant
+bash    1230 vagrant  rtd    DIR                8,1     4096       2 /
+bash    1230 vagrant  txt    REG                8,1  1234376  262519 /usr/bin/bash
+bash    1230 vagrant  mem    REG                8,1    51696  272577 /usr/lib/x86_64-linux-gnu/libnss_files-2.31.so
+bash    1230 vagrant  mem    REG                8,1   346132  263518 /usr/lib/locale/C.UTF-8/LC_CTYPE
+bash    1230 vagrant  mem    REG                8,1       50  263524 /usr/lib/locale/C.UTF-8/LC_NUMERIC
+bash    1230 vagrant  mem    REG                8,1     3360  263527 /usr/lib/locale/C.UTF-8/LC_TIME
+bash    1230 vagrant  mem    REG                8,1  1519554  263517 /usr/lib/locale/C.UTF-8/LC_COLLATE
+bash    1230 vagrant  mem    REG                8,1      270  263522 /usr/lib/locale/C.UTF-8/LC_MONETARY
+bash    1230 vagrant  mem    REG                8,1       48  263521 /usr/lib/locale/C.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+bash    1230 vagrant  mem    REG                8,1    27002  272834 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+bash    1230 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+bash    1230 vagrant  mem    REG                8,1    18688  272570 /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+bash    1230 vagrant  mem    REG                8,1   187792  264136 /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2
+bash    1230 vagrant  mem    REG                8,1       34  263525 /usr/lib/locale/C.UTF-8/LC_PAPER
+bash    1230 vagrant  mem    REG                8,1       62  263523 /usr/lib/locale/C.UTF-8/LC_NAME
+bash    1230 vagrant  mem    REG                8,1      131  263516 /usr/lib/locale/C.UTF-8/LC_ADDRESS
+bash    1230 vagrant  mem    REG                8,1       47  263526 /usr/lib/locale/C.UTF-8/LC_TELEPHONE
+bash    1230 vagrant  mem    REG                8,1       23  263520 /usr/lib/locale/C.UTF-8/LC_MEASUREMENT
+bash    1230 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+bash    1230 vagrant  mem    REG                8,1      252  263519 /usr/lib/locale/C.UTF-8/LC_IDENTIFICATION
+bash    1230 vagrant    0u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1230 vagrant    1u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1230 vagrant    2u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1230 vagrant  255u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1572 vagrant  cwd    DIR                8,1     4096  917506 /root
+bash    1572 vagrant  rtd    DIR                8,1     4096       2 /
+bash    1572 vagrant  txt    REG                8,1  1234376  262519 /usr/bin/bash
+bash    1572 vagrant  mem    REG                8,1    51696  272577 /usr/lib/x86_64-linux-gnu/libnss_files-2.31.so
+bash    1572 vagrant  mem    REG                8,1   346132  263518 /usr/lib/locale/C.UTF-8/LC_CTYPE
+bash    1572 vagrant  mem    REG                8,1       50  263524 /usr/lib/locale/C.UTF-8/LC_NUMERIC
+bash    1572 vagrant  mem    REG                8,1     3360  263527 /usr/lib/locale/C.UTF-8/LC_TIME
+bash    1572 vagrant  mem    REG                8,1  1519554  263517 /usr/lib/locale/C.UTF-8/LC_COLLATE
+bash    1572 vagrant  mem    REG                8,1      270  263522 /usr/lib/locale/C.UTF-8/LC_MONETARY
+bash    1572 vagrant  mem    REG                8,1       48  263521 /usr/lib/locale/C.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+bash    1572 vagrant  mem    REG                8,1    27002  272834 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+bash    1572 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+bash    1572 vagrant  mem    REG                8,1    18688  272570 /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+bash    1572 vagrant  mem    REG                8,1   187792  264136 /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2
+bash    1572 vagrant  mem    REG                8,1       34  263525 /usr/lib/locale/C.UTF-8/LC_PAPER
+bash    1572 vagrant  mem    REG                8,1       62  263523 /usr/lib/locale/C.UTF-8/LC_NAME
+bash    1572 vagrant  mem    REG                8,1      131  263516 /usr/lib/locale/C.UTF-8/LC_ADDRESS
+bash    1572 vagrant  mem    REG                8,1       47  263526 /usr/lib/locale/C.UTF-8/LC_TELEPHONE
+bash    1572 vagrant  mem    REG                8,1       23  263520 /usr/lib/locale/C.UTF-8/LC_MEASUREMENT
+bash    1572 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+bash    1572 vagrant  mem    REG                8,1      252  263519 /usr/lib/locale/C.UTF-8/LC_IDENTIFICATION
+bash    1572 vagrant    0u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1572 vagrant    1u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1572 vagrant    2u   CHR              136,0      0t0       3 /dev/pts/0
+bash    1572 vagrant  255u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1584 vagrant  cwd    DIR                8,1     4096  917506 /root
+stress  1584 vagrant  rtd    DIR                8,1     4096       2 /
+stress  1584 vagrant  txt    REG                8,1    26632  263719 /usr/bin/stress
+stress  1584 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+stress  1584 vagrant  mem    REG                8,1  1321344  272571 /usr/lib/x86_64-linux-gnu/libm-2.31.so
+stress  1584 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+stress  1584 vagrant    0u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1584 vagrant    1u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1584 vagrant    2u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1585 vagrant  cwd    DIR                8,1     4096  917506 /root
+stress  1585 vagrant  rtd    DIR                8,1     4096       2 /
+stress  1585 vagrant  txt    REG                8,1    26632  263719 /usr/bin/stress
+stress  1585 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+stress  1585 vagrant  mem    REG                8,1  1321344  272571 /usr/lib/x86_64-linux-gnu/libm-2.31.so
+stress  1585 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+stress  1585 vagrant    0u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1585 vagrant    1u   CHR              136,0      0t0       3 /dev/pts/0
+stress  1585 vagrant    2u   CHR              136,0      0t0       3 /dev/pts/0
+lsof    1588 vagrant  cwd    DIR                8,1     4096  917506 /root
+lsof    1588 vagrant  rtd    DIR                8,1     4096       2 /
+lsof    1588 vagrant  txt    REG                8,1   171488  269647 /usr/bin/lsof
+lsof    1588 vagrant  mem    REG                8,1    51696  272577 /usr/lib/x86_64-linux-gnu/libnss_files-2.31.so
+lsof    1588 vagrant  mem    REG                8,1    27002  272834 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+lsof    1588 vagrant  mem    REG                8,1   346132  263518 /usr/lib/locale/C.UTF-8/LC_CTYPE
+lsof    1588 vagrant  mem    REG                8,1   149520  272580 /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+lsof    1588 vagrant  mem    REG                8,1    18688  272570 /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+lsof    1588 vagrant  mem    REG                8,1   617128  264823 /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.10.1
+lsof    1588 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+lsof    1588 vagrant  mem    REG                8,1   166120  264329 /usr/lib/x86_64-linux-gnu/libselinux.so.1
+lsof    1588 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+lsof    1588 vagrant    0u   CHR              136,0      0t0       3 /dev/pts/0
+lsof    1588 vagrant    1u   CHR              136,0      0t0       3 /dev/pts/0
+lsof    1588 vagrant    2u   CHR              136,0      0t0       3 /dev/pts/0
+lsof    1588 vagrant    3r   DIR               0,20        0       1 /proc
+lsof    1588 vagrant    4r   DIR               0,20        0   18505 /proc/1588/fd
+lsof    1588 vagrant    5w  FIFO               0,12      0t0   18510 pipe
+lsof    1588 vagrant    6r  FIFO               0,12      0t0   18511 pipe
+lsof    1589 vagrant  cwd    DIR                8,1     4096  917506 /root
+lsof    1589 vagrant  rtd    DIR                8,1     4096       2 /
+lsof    1589 vagrant  txt    REG                8,1   171488  269647 /usr/bin/lsof
+lsof    1589 vagrant  mem    REG                8,1    51696  272577 /usr/lib/x86_64-linux-gnu/libnss_files-2.31.so
+lsof    1589 vagrant  mem    REG                8,1    27002  272834 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+lsof    1589 vagrant  mem    REG                8,1   346132  263518 /usr/lib/locale/C.UTF-8/LC_CTYPE
+lsof    1589 vagrant  mem    REG                8,1   149520  272580 /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+lsof    1589 vagrant  mem    REG                8,1    18688  272570 /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+lsof    1589 vagrant  mem    REG                8,1   617128  264823 /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.10.1
+lsof    1589 vagrant  mem    REG                8,1  1839792  272569 /usr/lib/x86_64-linux-gnu/libc-2.31.so
+lsof    1589 vagrant  mem    REG                8,1   166120  264329 /usr/lib/x86_64-linux-gnu/libselinux.so.1
+lsof    1589 vagrant  mem    REG                8,1   177928  272565 /usr/lib/x86_64-linux-gnu/ld-2.31.so
+lsof    1589 vagrant    4r  FIFO               0,12      0t0   18510 pipe
+lsof    1589 vagrant    7w  FIFO               0,12      0t0   18511 pipe
+vagrant@bullseye:/root$ lsof -u vagrant | cut -d " " -f 5,6
+
+ cwd
+ rtd
+ txt
+ mem
+ mem
+ mem
+
+
+
+ cwd
+ rtd
+ txt
+ mem
+ mem
+ mem
+
+
+
+1591 
+ 1592
+ 1592
+
+ 1592
+1593
+
+vagrant@bullseye:/root$ kill-9 $ (lsof -u vagrant | cut -d " " -f 5,6)
+bash: syntax error near unexpected token `('
+vagrant@bullseye:/root$ kill-9 $ (lsof -u vagrant | cut -d " " -f 5,6)

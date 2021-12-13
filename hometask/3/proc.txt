@@ -1,0 +1,65 @@
+root@bullseye:~# modprobe sch_netem
+root@bullseye:~# ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=108 time=29.3 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=108 time=29.4 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=108 time=30.7 ms
+^C
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2009ms
+rtt min/avg/max/mdev = 29.313/29.802/30.679/0.621 ms
+root@bullseye:~# bg
+-bash: bg: current: no such job
+root@bullseye:~# fg
+-bash: fg: current: no such job
+root@bullseye:~# jobs
+root@bullseye:~# ping 8.8.8.8&
+[1] 928
+root@bullseye:~# PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=108 time=29.0 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=108 time=29.2 ms
+
+root@bullseye:~#
+root@bullseye:~# 64 bytes from 8.8.8.8: icmp_seq=3 ttl=108 time=29.2 ms
+64 bytes from 8.8.8.8: icmp_seq=4 ttl=108 time=29.1 ms
+
+root@bullseye:~#
+root@bullseye:~#
+root@bullseye:~#
+root@bullseye:~# 64 bytes from 8.8.8.8: icmp_seq=5 ttl=108 time=29.0 ms
+
+root@bullseye:~#
+root@bullseye:~#
+root@bullseye:~# 64 bytes from 8.8.8.8: icmp_seq=6 ttl=108 time=30.5 ms
+64 bytes from 8.8.8.8: icmp_seq=7 ttl=108 time=29.5 ms
+64 bytes from 8.8.8.8: icmp_seq=8 ttl=108 time=29.1 ms
+^C
+root@bullseye:~# 64 bytes from 8.8.8.8: icmp_seq=9 ttl=108 time=28.9 ms
+64 bytes from 8.8.8.8: icmp_seq=10 ttl=108 time=29.7 ms
+64 bytes from 8.8.8.8: icmp_seq=11 ttl=108 time=29.8 ms
+64 bytes from 8.8.8.8: icmp_seq=12 ttl=108 time=29.1 ms
+64 bytes from 8.8.8.8: icmp_seq=13 ttl=108 time=29.6 ms
+64 bytes from 8.8.8.8: icmp_seq=14 ttl=108 time=29.3 ms
+bg
+-bash: bg: job 1 already in background
+root@bullseye:~# 64 bytes from 8.8.8.8: icmp_seq=15 ttl=108 time=29.6 ms
+64 bytes from 8.8.8.8: icmp_seq=16 ttl=108 time=29.4 ms
+fg
+ping 8.8.8.8
+64 bytes from 8.8.8.8: icmp_seq=17 ttl=108 time=29.0 ms
+64 bytes from 8.8.8.8: icmp_seq=18 ttl=108 time=30.1 ms
+
+
+64 bytes from 8.8.8.8: icmp_seq=19 ttl=108 time=29.8 ms
+64 bytes from 8.8.8.8: icmp_seq=20 ttl=108 time=29.7 ms
+64 bytes from 8.8.8.8: icmp_seq=21 ttl=108 time=28.7 ms
+64 bytes from 8.8.8.8: icmp_seq=22 ttl=108 time=29.2 ms
+64 bytes from 8.8.8.8: icmp_seq=23 ttl=108 time=29.0 ms
+64 bytes from 8.8.8.8: icmp_seq=24 ttl=108 time=30.0 ms
+64 bytes from 8.8.8.8: icmp_seq=25 ttl=108 time=29.1 ms
+64 bytes from 8.8.8.8: icmp_seq=26 ttl=108 time=29.0 ms
+^C
+--- 8.8.8.8 ping statistics ---
+26 packets transmitted, 26 received, 0% packet loss, time 26049ms
+rtt min/avg/max/mdev = 28.657/29.361/30.494/0.411 ms
+root@bullseye:~#

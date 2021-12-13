@@ -1,0 +1,229 @@
+
+root@instance-20191022-2038:~$ mkdir epam
+root@instance-20191022-2038:~$ cd epam
+root@instance-20191022-2038:~/epam$ mkdir dir1
+root@instance-20191022-2038:~/epam$ touch dir1/dir2
+root@instance-20191022-2038:~/epam$ touch f1
+root@instance-20191022-2038:~/epam$ touch f2
+root@instance-20191022-2038:~/epam$ rm -rf dir1/dir2
+root@instance-20191022-2038:~/epam$ mkdir dir1/dir2
+root@instance-20191022-2038:~/epam$ ll
+total 4
+drwxr-xr-x 3 root root 4096 Dec 13 12:15 dir1
+-rw-r--r-- 1 root root    0 Dec 13 12:14 f1
+-rw-r--r-- 1 root root    0 Dec 13 12:14 f2
+root@instance-20191022-2038:~/epam$ tree
+-bash: tree: command not found
+root@instance-20191022-2038:~/epam$ apt install tree
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  tree
+0 upgraded, 1 newly installed, 0 to remove and 27 not upgraded.
+Need to get 49.6 kB of archives.
+After this operation, 118 kB of additional disk space will be used.
+Get:1 https://deb.debian.org/debian bullseye/main amd64 tree amd64 1.8.0-1+b1 [49.6 kB]
+Fetched 49.6 kB in 0s (492 kB/s)
+Selecting previously unselected package tree.
+(Reading database ... 157121 files and directories currently installed.)
+Preparing to unpack .../tree_1.8.0-1+b1_amd64.deb ...
+Unpacking tree (1.8.0-1+b1) ...
+Setting up tree (1.8.0-1+b1) ...
+Processing triggers for man-db (2.9.4-2) ...
+root@instance-20191022-2038:~/epam$ tree
+.
++-- dir1
+¦   L-- dir2
++-- f1
+L-- f2
+
+2 directories, 2 files
+root@instance-20191022-2038:~/epam$ rm -r dir1
+root@instance-20191022-2038:~/epam$ cp /etc/services /
+root@instance-20191022-2038:~/epam$ ll
+total 0
+-rw-r--r-- 1 root root 0 Dec 13 12:14 f1
+-rw-r--r-- 1 root root 0 Dec 13 12:14 f2
+root@instance-20191022-2038:~/epam$ cp /etc/services ~/
+root@instance-20191022-2038:~/epam$ ll
+total 0
+-rw-r--r-- 1 root root 0 Dec 13 12:14 f1
+-rw-r--r-- 1 root root 0 Dec 13 12:14 f2
+root@instance-20191022-2038:~/epam$ cp /etc/services ~/epam
+root@instance-20191022-2038:~/epam$ ll
+total 16
+-rw-r--r-- 1 root root     0 Dec 13 12:14 f1
+-rw-r--r-- 1 root root     0 Dec 13 12:14 f2
+-rw-r--r-- 1 root root 12813 Dec 13 12:18 services
+root@instance-20191022-2038:~/epam$ cat services | grep http
+# Updated from https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml .
+http            80/tcp          www             # WorldWideWeb HTTP
+https           443/tcp                         # http protocol over TLS/SSL
+https           443/udp                         # HTTP/3
+http-alt        8080/tcp        webcache        # WWW caching service
+root@instance-20191022-2038:~/epam$ cat services | wc -l
+361
+root@instance-20191022-2038:~/epam$ more services
+# Network services, Internet style
+#
+# Updated from https://www.iana.org/assignments/service-names-port-numbers/servi
+ce-names-port-numbers.xhtml .
+#
+# New ports will be added on request if they have been officially assigned
+# by IANA and used in the real-world or are needed by a debian package.
+# If you need a huge list of used numbers please install the nmap package.
+
+tcpmux          1/tcp                           # TCP port service multiplexer
+echo            7/tcp
+echo            7/udp
+discard         9/tcp           sink null
+discard         9/udp           sink null
+systat          11/tcp          users
+daytime         13/tcp
+daytime         13/udp
+netstat         15/tcp
+qotd            17/tcp          quote
+chargen         19/tcp          ttytst source
+chargen         19/udp          ttytst source
+ftp-data        20/tcp
+ftp             21/tcp
+fsp             21/udp          fspd
+ssh             22/tcp                          # SSH Remote Login Protocol
+telnet          23/tcp
+smtp            25/tcp          mail
+time            37/tcp          timserver
+time            37/udp          timserver
+whois           43/tcp          nicname
+tacacs          49/tcp                          # Login Host Protocol (TACACS)
+tacacs          49/udp
+domain          53/tcp                          # Domain Name Server
+domain          53/udp
+bootps          67/udp
+bootpc          68/udp
+tftp            69/udp
+gopher          70/tcp                          # Internet Gopher
+finger          79/tcp
+http            80/tcp          www             # WorldWideWeb HTTP
+kerberos        88/tcp          kerberos5 krb5 kerberos-sec     # Kerberos v5
+kerberos        88/udp          kerberos5 krb5 kerberos-sec     # Kerberos v5
+root@instance-20191022-2038:~/epam$ less services
+
+[1]+  Stopped                 less services
+root@instance-20191022-2038:~/epam$ tail services
+sgi-cad         17004/tcp                       # Cluster Admin daemon
+binkp           24554/tcp                       # binkp fidonet protocol
+asp             27374/tcp                       # Address Search Protocol
+asp             27374/udp
+csync2          30865/tcp                       # cluster synchronization tool
+dircproxy       57000/tcp                       # Detachable IRC Proxy
+tfido           60177/tcp                       # fidonet EMSI over telnet
+fido            60179/tcp                       # fidonet EMSI over TCP
+
+# Local services
+root@instance-20191022-2038:~/epam$ head services
+# Network services, Internet style
+#
+# Updated from https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml .
+#
+# New ports will be added on request if they have been officially assigned
+# by IANA and used in the real-world or are needed by a debian package.
+# If you need a huge list of used numbers please install the nmap package.
+
+tcpmux          1/tcp                           # TCP port service multiplexer
+echo            7/tcp
+root@instance-20191022-2038:~/epam$ head -n 10 services
+# Network services, Internet style
+#
+# Updated from https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml .
+#
+# New ports will be added on request if they have been officially assigned
+# by IANA and used in the real-world or are needed by a debian package.
+# If you need a huge list of used numbers please install the nmap package.
+
+tcpmux          1/tcp                           # TCP port service multiplexer
+echo            7/tcp
+root@instance-20191022-2038:~/epam$ head -n 2 services
+# Network services, Internet style
+#
+root@instance-20191022-2038:~/epam$ tail -n 2 services
+
+# Local services
+root@instance-20191022-2038:~/epam$ cal
+-bash: cal: command not found
+root@instance-20191022-2038:~/epam$ man cal
+No manual entry for cal
+root@instance-20191022-2038:~/epam$ apt install cal
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package cal
+root@instance-20191022-2038:~/epam$
+root@instance-20191022-2038:~/epam$
+root@instance-20191022-2038:~/epam$ bc
+-bash: bc: command not found
+root@instance-20191022-2038:~/epam$ apt-get install bc
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  bc
+0 upgraded, 1 newly installed, 0 to remove and 27 not upgraded.
+Need to get 109 kB of archives.
+After this operation, 247 kB of additional disk space will be used.
+Get:1 https://deb.debian.org/debian bullseye/main amd64 bc amd64 1.07.1-2+b2 [109 kB]
+Fetched 109 kB in 0s (1,157 kB/s)
+Selecting previously unselected package bc.
+(Reading database ... 157130 files and directories currently installed.)
+Preparing to unpack .../bc_1.07.1-2+b2_amd64.deb ...
+Unpacking bc (1.07.1-2+b2) ...
+Setting up bc (1.07.1-2+b2) ...
+Processing triggers for man-db (2.9.4-2) ...
+root@instance-20191022-2038:~/epam$ apt-get install cal
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package cal
+root@instance-20191022-2038:~/epam$ bc
+bc 1.07.1
+Copyright 1991-1994, 1997, 1998, 2000, 2004, 2006, 2008, 2012-2017 Free Software Foundation, Inc.
+This is free software with ABSOLUTELY NO WARRANTY.
+For details type `warranty'.
+^C
+(interrupt) use quit to exit.
+^Z
+[2]+  Stopped                 bc
+root@instance-20191022-2038:~/epam$ bc -i
+bc 1.07.1
+Copyright 1991-1994, 1997, 1998, 2000, 2004, 2006, 2008, 2012-2017 Free Software Foundation, Inc.
+This is free software with ABSOLUTELY NO WARRANTY.
+For details type `warranty'.
+^C
+(interrupt) use quit to exit.
+^Z
+[3]+  Stopped                 bc -i
+root@instance-20191022-2038:~/epam$ man bc
+ncal -ojy 2051
+ncal -ojy 2051
+-bash: ncal: command not found
+root@instance-20191022-2038:~/epam$
+root@instance-20191022-2038:~/epam$ apt install ncal
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  ncal
+0 upgraded, 1 newly installed, 0 to remove and 27 not upgraded.
+Need to get 30.1 kB of archives.
+After this operation, 69.6 kB of additional disk space will be used.
+Get:1 https://deb.debian.org/debian bullseye/main amd64 ncal amd64 12.1.7+nmu3 [30.1 kB]
+Fetched 30.1 kB in 0s (301 kB/s)
+Selecting previously unselected package ncal.
+(Reading database ... 157149 files and directories currently installed.)
+Preparing to unpack .../ncal_12.1.7+nmu3_amd64.deb ...
+Unpacking ncal (12.1.7+nmu3) ...
+Setting up ncal (12.1.7+nmu3) ...
+Processing triggers for man-db (2.9.4-2) ...
+root@instance-20191022-2038:~/epam$ ncal -ojy 2051
+05/07/2051
+root@instance-20191022-2038:~/epam$

@@ -1,0 +1,8 @@
+vagrant@bullseye:~$ whoami
+vagrant
+vagrant@bullseye:~$ sudo su
+root@bullseye:/home/vagrant# cd
+root@bullseye:~# whoami
+root
+root@bullseye:~# adduser -m -d /home/hey hey
+root@bullseye:~# sudo useradd -m -G root hi
