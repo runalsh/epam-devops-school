@@ -107,7 +107,7 @@ Vagrant.configure("2") do |config|
 	router.vm.network "private_network", virtualbox__intnet: "manage", ip: "192.168.30.1"
 	
 	router.vm.provision "dns_server", type: "shell", privileged: true, inline: "apt install dnsmasq -y && cp -rf /vagrant/Desktop/router/{dnsmasq.conf,resolv.conf,hosts} /home/vagrant/ && cp -rf /home/vagrant/ {dnsmasq.conf,resolv.conf,hosts} /etc && systemctl restart dnsmasq"
-	router.vm.provision "ipforw_routing", type: "shell", inline: "sudo sysctl -w net.ipv4.ip_forward=1 && sysctl -p && iptables -P FORWARD ACCEPT"
+	router.vm.provision "ipforw_routing", type: "shell", inline: "sudo sysctl -w net.ipv4.ip_forward=1 && echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && sysctl -p && iptables -P FORWARD ACCEPT"
 	router.vm.provision :docker
 	router.vm.provision :docker_compose
 	router.vm.provision "prom_graf", type: "shell", inline: "cp -r /vagrant/desktop/router/prom_graf /home/vagrant/ && docker-compose -f /home/vagrant/prom_graf/docker-compose.yml up -d"
