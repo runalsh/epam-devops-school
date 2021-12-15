@@ -18,7 +18,8 @@ Vagrant.configure("2") do |config|
 	chmod 600 /home/vagrant/.ssh/authorized_keys2 && chmod 600 /home/vagrant/.ssh/universal_priv_rsa
 	chown vagrant /home/vagrant/.ssh/universal_priv_rsa &&	chown vagrant /home/vagrant/.ssh/authorized_keys2
 	chmod 600 /root/.ssh/universal_priv_rsa && chmod 600 /root/.ssh/authorized_keys2
-	cp /vagrant/Desktop/firewall.sh /home/vagrant/ && chmod +x /home/vagrant/firewall.sh	
+	cp /vagrant/Desktop/firewall.sh /home/vagrant/ && chmod +x /home/vagrant/firewall.sh
+	echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/etc/sysctl.conf && sysctl -p
 	SHELL
 
   
