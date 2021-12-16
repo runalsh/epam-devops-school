@@ -115,6 +115,7 @@ Vagrant.configure("2") do |config|
 	router.vm.provision "nodeexp_local", type: "shell", privileged: true, inline: "wget  https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz &&  tar xvfz node_exporter-1.3.1.linux-amd64.tar.gz && mv node_exporter-1.3.1.linux-amd64/node_exporter /usr/local/bin/ && useradd -rs /bin/false node_exporter && cp -r /vagrant/desktop/router/node_exporter.service /home/vagrant/ && cp -r /home/vagrant/node_exporter.service /etc/systemd/system/ && systemctl daemon-reload && systemctl start node_exporter && systemctl enable node_exporter"
 	#db.vm.provision "prepare mimtm stage", type: "shell", inline: "apt install mitmproxy -y && iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT --to-port 8080"
 	router.vm.provision "route", type: "shell", inline: "sh /vagrant/home/firewall.sh -router"
+	router.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
 
   end   
  
