@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
 	chmod 600 /home/vagrant/.ssh/authorized_keys2 && chmod 600 /home/vagrant/.ssh/universal_priv_rsa
 	chown vagrant /home/vagrant/.ssh/universal_priv_rsa &&	chown vagrant /home/vagrant/.ssh/authorized_keys2
 	chmod 600 /root/.ssh/universal_priv_rsa && chmod 600 /root/.ssh/authorized_keys2
-	cp /vagrant/Desktop/firewall.sh /home/vagrant/ && chmod +x /home/vagrant/firewall.sh
+	cp /vagrant/Desktop/firewall.sh /home/vagrant/ && chmod +x /home/vagrant/firewall.sh	
 	echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/etc/sysctl.conf && sysctl -p
 	SHELL
 
@@ -107,15 +107,15 @@ Vagrant.configure("2") do |config|
 	router.vm.network "private_network", virtualbox__intnet: "log", ip: "192.168.40.1"
 	router.vm.network "private_network", virtualbox__intnet: "manage", ip: "192.168.30.1"
 	
-	router.vm.provision "dns_server", type: "shell", privileged: true, inline: "apt install dnsmasq -y && cp -rf /vagrant/Desktop/router/{dnsmasq.conf,resolv.conf,hosts} /home/vagrant/ && cp -rf /home/vagrant/ {dnsmasq.conf,resolv.conf,hosts} /etc && systemctl restart dnsmasq"
+	router.vm.provision "dns_server", type: "shell", privileged: true, inline: "apt install dnsmasq -y && cp -rf /vagrant/Desktop/router/{dnsmasq.conf,resolv.conf,hosts} /home/vagrant/ && cp -rf /home/vagrant/{dnsmasq.conf,resolv.conf,hosts} /etc && systemctl restart dnsmasq"
 	router.vm.provision "ipforw_routing", type: "shell", inline: "sudo sysctl -w net.ipv4.ip_forward=1 && sysctl -p && iptables -P FORWARD ACCEPT"
 	router.vm.provision :docker
 	router.vm.provision :docker_compose
 	router.vm.provision "prom_graf", type: "shell", inline: "cp -r /vagrant/desktop/router/prom_graf /home/vagrant/ && docker-compose -f /home/vagrant/prom_graf/docker-compose.yml up -d"
 	router.vm.provision "nodeexp_local", type: "shell", privileged: true, inline: "wget  https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz &&  tar xvfz node_exporter-1.3.1.linux-amd64.tar.gz && mv node_exporter-1.3.1.linux-amd64/node_exporter /usr/local/bin/ && useradd -rs /bin/false node_exporter && cp -r /vagrant/desktop/router/node_exporter.service /home/vagrant/ && cp -r /home/vagrant/node_exporter.service /etc/systemd/system/ && systemctl daemon-reload && systemctl start node_exporter && systemctl enable node_exporter"
 	#db.vm.provision "prepare mimtm stage", type: "shell", inline: "apt install mitmproxy -y && iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT --to-port 8080"
-	router.vm.provision "route", type: "shell", inline: "sh /vagrant/home/firewall.sh -router"
 	router.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
+	router.vm.provision "route", type: "shell", inline: "sh /vagrant/home/firewall.sh -router"
 
   end   
  
@@ -158,7 +158,7 @@ Vagrant.configure("2") do |config|
 	web.vm.network "public_network"
 	web.vm.network "forwarded_port", guest: 80, host: 80
 	web.vm.network "forwarded_port", guest: 443, host: 443
-	web.vm.provision "nginx_local", type: "shell", privileged: true, inline: "sudo apt install nginx php-fpm php-pgsql python3 python3-pip  libpq-dev ssl-cert -y && pip3 install psycopg2 && sudo mkdir -p /local/scripts && make-ssl-cert generate-default-snakeoil && sudo chown vagrant /local/scripts  && cp /vagrant/Desktop/web/nginx_default /home/vagrant/ && sudo cp /home/vagrant/nginx_default /etc/nginx/sites-available/default && cp /vagrant/Desktop/web/1.php /home/vagrant/ && sudo cp /home/vagrant/1.php /local/scripts && sudo echo extension=pdo_pgsql >> /etc/php/7.4/fpm/php.ini && sudo echo extension=pgsql >> /etc/php/7.4/fpm/php.ini && sudo service php7.4-fpm restart && cp /vagrant/Desktop/web/web.runalsh.local.* /home/vagrant/ && sudo cp /home/vagrant/web.runalsh.local.crt /etc/ssl/certs/  && sudo cp /home/vagrant/web.runalsh.local.key /etc/ssl/private/ && cp /home/vagrant/web.runalsh.local.crt /usr/local/share/ca-certificates && update-ca-certificates && sudo service nginx restart && cp /usr/share/nginx/html/index.html /local/"
+	web.vm.provision "nginx_local", type: "shell", privileged: false, inline: "sudo apt install nginx php-fpm php-pgsql python3 python3-pip  libpq-dev ssl-cert -y && pip3 install psycopg2 && sudo mkdir -p /local/scripts && make-ssl-cert generate-default-snakeoil && sudo chown vagrant /local/scripts  && cp /vagrant/Desktop/web/nginx_default /home/vagrant/ && sudo cp /home/vagrant/nginx_default /etc/nginx/sites-available/default && cp /vagrant/Desktop/web/1.php /home/vagrant/ && sudo cp /home/vagrant/1.php /local/scripts && sudo echo extension=pdo_pgsql >> /etc/php/7.4/fpm/php.ini && sudo echo extension=pgsql >> /etc/php/7.4/fpm/php.ini && sudo service php7.4-fpm restart && cp /vagrant/Desktop/web/web.runalsh.local.* /home/vagrant/ && sudo cp /home/vagrant/web.runalsh.local.crt /etc/ssl/certs/  && sudo cp /home/vagrant/web.runalsh.local.key /etc/ssl/private/ && cp /home/vagrant/web.runalsh.local.crt /usr/local/share/ca-certificates && update-ca-certificates && sudo service nginx restart && cp /usr/share/nginx/html/index.html /local/"
 	web.vm.provision "python_script", type: "shell", privileged: true, inline: <<-SHELL
 		pip3 install psycopg2 PrettyTable
 		cp /vagrant/Desktop/web/2.py /home/vagrant/ && sudo cp /home/vagrant/2.py /local/scripts
@@ -171,7 +171,8 @@ Vagrant.configure("2") do |config|
 	web.vm.provision "dns_server_web", type: "shell", privileged: true, inline: <<-SHELL
 		echo "nameserver 192.168.10.3" > /etc/resolv.conf
 		SHELL
-	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"	
+	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
+	#here will be stuck with entering YES on request , may be write script with recieve
 	web.vm.provision "route", type: "shell", inline: "sudo route del default && sudo ip route add default via 192.168.10.3"
 	web.vm.provision "route", type: "shell", inline: "sh /vagrant/home/firewall.sh -web"
 
