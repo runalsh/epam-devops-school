@@ -172,10 +172,11 @@ Vagrant.configure("2") do |config|
 	web.vm.provision "dns_server_web", type: "shell", privileged: true, inline: <<-SHELL
 		echo "nameserver 192.168.10.3" > /etc/resolv.conf
 		SHELL
+	web.vm.provision "route", type: "shell", inline: "sudo route del default && sudo ip route add default via 192.168.10.3"
+	#web.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -web"	
 	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "mkdir -p /local/files && sshfs -o StrictHostKeyChecking=no -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
 	#here will be stuck with entering YES on request , may be write script with recieve
-	web.vm.provision "route", type: "shell", inline: "sudo route del default && sudo ip route add default via 192.168.10.3"
-	#web.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -web"
+
 
   end    
   
