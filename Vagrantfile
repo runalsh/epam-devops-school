@@ -89,8 +89,8 @@ Vagrant.configure("2") do |config|
 	db.vm.provision "dns_server_db", type: "shell", privileged: true, inline: <<-SHELL
 		echo "nameserver 192.168.20.3" > /etc/resolv.conf
 		SHELL
-	#db.vm.provision "get trusted cert from web", type: "shell", inline: "scp -i ~/.ssh/universal_priv_rsa root@web.runalsh.local:/etc/ssl/certs/web.runalsh.local.crt /usr/local/share/ca-certificates && update-ca-certificates"
-	#db.vm.provision "get trusted cert from router for mitm", type: "shell", inline: "scp -i ~/.ssh/universal_priv_rsa root@router.runalsh.local:/root/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates && update-ca-certificates"
+	#db.vm.provision "get trusted cert from web", type: "shell", inline: "scp -o "StrictHostKeyChecking no" -i ~/.ssh/universal_priv_rsa root@web.runalsh.local:/etc/ssl/certs/web.runalsh.local.crt /usr/local/share/ca-certificates && update-ca-certificates"
+	#db.vm.provision "get trusted cert from router for mitm", type: "shell", inline: "scp -o "StrictHostKeyChecking no" -i ~/.ssh/universal_priv_rsa root@router.runalsh.local:/root/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates && update-ca-certificates"
 	#db.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -db"
   end
 
@@ -114,7 +114,7 @@ Vagrant.configure("2") do |config|
 	router.vm.provision "prom_graf", type: "shell", inline: "cp -r /vagrant/Desktop/epam/router/prom_graf /home/vagrant/ && docker-compose -f /home/vagrant/prom_graf/docker-compose.yml up -d"
 	router.vm.provision "nodeexp_local", type: "shell", privileged: true, inline: "wget  https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz &&  tar xvfz node_exporter-1.3.1.linux-amd64.tar.gz && mv node_exporter-1.3.1.linux-amd64/node_exporter /usr/local/bin/ && useradd -rs /bin/false node_exporter && cp -r /vagrant/Desktop/epam/router/node_exporter.service /home/vagrant/ && cp -r /home/vagrant/node_exporter.service /etc/systemd/system/ && systemctl daemon-reload && systemctl start node_exporter && systemctl enable node_exporter"
 	#db.vm.provision "prepare mimtm stage", type: "shell", inline: "apt install mitmproxy -y && iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT --to-port 8080"
-	router.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
+	router.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o StrictHostKeyChecking=no -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
 	#router.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -router"
 
   end   
@@ -171,7 +171,7 @@ Vagrant.configure("2") do |config|
 	web.vm.provision "dns_server_web", type: "shell", privileged: true, inline: <<-SHELL
 		echo "nameserver 192.168.10.3" > /etc/resolv.conf
 		SHELL
-	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
+	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o StrictHostKeyChecking=no -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
 	#here will be stuck with entering YES on request , may be write script with recieve
 	web.vm.provision "route", type: "shell", inline: "sudo route del default && sudo ip route add default via 192.168.10.3"
 	#web.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -web"
