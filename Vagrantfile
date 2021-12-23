@@ -126,7 +126,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "elk" do |elk|
 	elk.vm.network :forwarded_port, guest: 22, host: 2233
 	elk.vm.network "private_network", virtualbox__intnet: "log", ip: "192.168.40.2"
-	elk.vm.network :forwarded_port, guest: 5044, host: 5044
+	elk.vm.network :forwarded_port, guest: 5601, host: 5601
 	elk.vm.provision "vmem", type: "shell", inline: "sudo sysctl vm.max_map_count=262144"
 
 	elk.vm.provider "virtualbox" do |v|
