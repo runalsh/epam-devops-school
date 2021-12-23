@@ -4,7 +4,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/bullseye64"
-  config.vm.box_check_update = false
+  config.vm.box_check_update = true
 
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
 	timedatectl set-timezone Europe/Moscow
@@ -168,10 +168,11 @@ Vagrant.configure("2") do |config|
 		SHELL
 	web.vm.provision "filebeat", type: "shell", privileged: true, inline: "cp /vagrant/Desktop/epam/web/filebeat.yml /home/vagrant &&  wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.16.0-amd64.deb && sudo dpkg -i filebeat-7.16.0-amd64.deb && sudo filebeat modules enable system nginx  && sudo sh -c 'cp /home/vagrant/filebeat.yml /etc/filebeat/filebeat.yml ' && sudo service filebeat restart"
 	#sudo filebeat setup       filebeat-e
+	web.vm.provision "install sshfs", type: "shell", privileged: true, inline: "apt install sshfs -y"
 	web.vm.provision "dns_server_web", type: "shell", privileged: true, inline: <<-SHELL
 		echo "nameserver 192.168.10.3" > /etc/resolv.conf
 		SHELL
-	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "apt install sshfs -y && mkdir -p /local/files && sshfs -o StrictHostKeyChecking=no -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
+	web.vm.provision "mount local/files from db", type: "shell", privileged: true, inline: "mkdir -p /local/files && sshfs -o StrictHostKeyChecking=no -o allow_other,ro,IdentityFile=/home/vagrant/.ssh/universal_priv_rsa root@db.runalsh.local:/local/files /local/files"
 	#here will be stuck with entering YES on request , may be write script with recieve
 	web.vm.provision "route", type: "shell", inline: "sudo route del default && sudo ip route add default via 192.168.10.3"
 	#web.vm.provision "route", type: "shell", inline: "sh /home/vagrant/firewall.sh -web"
